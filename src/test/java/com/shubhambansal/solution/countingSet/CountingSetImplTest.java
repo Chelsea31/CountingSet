@@ -76,11 +76,6 @@ public class CountingSetImplTest {
         Assert.assertEquals(remove, 0);
     }
 
-    @Test
-    public void count() {
-
-    }
-
     private Thread createNewThreadWithOperation(int cycles, Operation operation) {
         Thread thread = new Thread("thread-" + threadCount++) {
             @Override

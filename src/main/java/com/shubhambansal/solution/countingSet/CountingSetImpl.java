@@ -5,11 +5,14 @@ package com.shubhambansal.solution.countingSet;
  */
 
 import com.shubhambansal.solution.constants.Operation;
+
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 public class CountingSetImpl implements CountingSet {
     public static boolean isDebugModeEnabled;
     private final ConcurrentHashMap<String, Integer> countingSet;
+    private final Logger logger = Logger.getLogger("CountingSetLogger");
 
     public CountingSetImpl() {
         countingSet = new ConcurrentHashMap<>();
@@ -29,16 +32,16 @@ public class CountingSetImpl implements CountingSet {
         countingSet.merge(s, 1, Integer::sum);
         Integer count = countingSet.get(s);
         if (isDebugModeEnabled)
-            System.out.println(Operation.ADD + " : " + Thread.currentThread().getName() + " : " + count);
+            logger.info(Operation.ADD + " : " + Thread.currentThread().getName() + " : " + count);
         return count;
     }
 
     @Override
     public int remove(String s) {
-        countingSet.compute("a", (key, value) -> value==null||value == 1? null : value - 1);
+        countingSet.compute("a", (key, value) -> value == null || value == 1 ? null : value - 1);
         int count = countingSet.getOrDefault(s, 0);
         if (isDebugModeEnabled)
-            System.out.println(Operation.REMOVE + " : " + Thread.currentThread().getName() + " : " + count);
+            logger.info(Operation.REMOVE + " : " + Thread.currentThread().getName() + " : " + count);
         return count;
     }
 
