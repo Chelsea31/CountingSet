@@ -1,4 +1,4 @@
-package com.gameskraft.shubhambansal.countingSet;
+package com.shubhambansal.solution.countingSet;
 
 /*
  * @author Shubham Bansal

@@ -1,6 +1,6 @@
-package com.gameskraft.shubhambansal.countingSet;
+package com.shubhambansal.solution.countingSet;
 
-import com.gameskraft.shubhambansal.constants.Operation;
+import com.shubhambansal.solution.constants.Operation;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

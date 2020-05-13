@@ -1,4 +1,4 @@
-package com.gameskraft.shubhambansal.constants;
+package com.shubhambansal.solution.constants;
 
 /*
  * @author Shubham Bansal
