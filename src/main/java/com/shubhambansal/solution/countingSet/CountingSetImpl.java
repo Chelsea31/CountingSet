@@ -29,8 +29,19 @@ public class CountingSetImpl implements CountingSet {
 
     @Override
     public int add(String s) {
-        countingSet.merge(s, 1, Integer::sum);
-        Integer count = countingSet.get(s);
+        int count = countingSet.merge(s, 1, Integer::sum);
+        // To debug a scenario when get is perform as a thread unsafe operation
+        // Uncomment this to test
+        //        if (isDebugModeEnabled) {
+        //            try {
+        //                Thread.sleep(100);
+        //            } catch (InterruptedException e) {
+        //                e.printStackTrace();
+        //            }
+        //            count = countingSet.get(s);
+        //
+        //        }
+
         if (isDebugModeEnabled)
             logger.info(Operation.ADD + " : " + Thread.currentThread().getName() + " : " + count);
         return count;
@@ -38,8 +49,8 @@ public class CountingSetImpl implements CountingSet {
 
     @Override
     public int remove(String s) {
-        countingSet.compute("a", (key, value) -> value == null || value == 1 ? null : value - 1);
-        int count = countingSet.getOrDefault(s, 0);
+        //If the value is {0,1,null}, we need to return 0, else the value - 1
+        int count = countingSet.compute(s, (key, value) -> value == null || value <= 1 ? 0 : value - 1);
         if (isDebugModeEnabled)
             logger.info(Operation.REMOVE + " : " + Thread.currentThread().getName() + " : " + count);
         return count;

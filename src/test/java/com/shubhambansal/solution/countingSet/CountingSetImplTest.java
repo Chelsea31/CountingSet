@@ -26,7 +26,40 @@ public class CountingSetImplTest {
     @Test
     public void testAddInCountingSetImpl_whenSingleThread_shouldSucceed() {
         int add = countingSet.add(KEY);
-        Assert.assertEquals(add, 1);
+        Assert.assertEquals(1, add);
+    }
+
+    // This test case is written to specifically test the get thread unsafe operation
+    // Uncomment the code in IMPL add method to test the functionality
+    @Test
+    public void testAddInCountingImpl_whenThreaded_betweenOperation_shouldSucceed() throws InterruptedException {
+        // This is just a hack to fetch values from the thread, alternative is to implement callable
+        final int[] count1 = {0};
+        final int[] count2 = {0};
+        Thread t1 = new Thread("thread-" + 1) {
+            @Override
+            public void run() {
+                for (int i = 0; i < 1; i++) {
+                    count1[0] += countingSet.add(KEY);
+                }
+            }
+        };
+
+        Thread t2 = new Thread("thread-" + 2) {
+            @Override
+            public void run() {
+                for (int i = 0; i < 1; i++) {
+                    count2[0] += countingSet.add(KEY);
+                }
+            }
+        };
+
+        t1.start();
+        t2.start();
+        t1.join();
+        t2.join();
+        //Either thread1 can run first or 2, so one of them will get 1 and the other 2, or vice-versa.
+        Assert.assertTrue((count1[0] == 1 && count2[0] == 2) || (count1[0] == 2 && count2[0] == 1));
     }
 
     @Test
@@ -39,7 +72,7 @@ public class CountingSetImplTest {
         t1.join();
         t2.join();
 
-        Assert.assertEquals(countingSet.count(KEY), 20000);
+        Assert.assertEquals(20000, countingSet.count(KEY));
     }
 
     @Test
@@ -49,7 +82,7 @@ public class CountingSetImplTest {
         countingSet.add(KEY);
         //Action
         int remove = countingSet.remove(KEY);
-        Assert.assertEquals(remove, 1);
+        Assert.assertEquals(1, remove);
     }
 
     @Test
@@ -67,13 +100,13 @@ public class CountingSetImplTest {
         t1.join();
         t2.join();
 
-        Assert.assertEquals(countingSet.count(KEY), 0);
+        Assert.assertEquals(0, countingSet.count(KEY));
     }
 
     @Test
     public void testRemoveInCountingSetImpl_whenSingleThread_shouldFail() {
         int remove = countingSet.remove(KEY);
-        Assert.assertEquals(remove, 0);
+        Assert.assertEquals(0, remove);
     }
 
     private Thread createNewThreadWithOperation(int cycles, Operation operation) {
